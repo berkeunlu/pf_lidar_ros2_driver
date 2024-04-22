@@ -21,8 +21,8 @@ def generate_launch_description():
 
     node = Node(
         package='pf_driver',
-        name='ros_main',
-        executable='ros_main',
+        name='pflidar_node',
+        executable='pflidar_node',
         output='screen',
         parameters=[config]
     )

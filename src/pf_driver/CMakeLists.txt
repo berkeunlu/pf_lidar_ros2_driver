@@ -54,17 +54,17 @@ set(${PROJECT_NAME}_SOURCES
   src/ros/pf_data_publisher.cpp
 )
 
-add_executable(ros_main
+add_executable(pflidar_node
   ${${PROJECT_NAME}_SOURCES}
   src/ros/ros_main.cpp
 )
-target_link_libraries(ros_main
+target_link_libraries(pflidar_node
   curlpp
   curl
   jsoncpp
   yaml-cpp
 )
-ament_target_dependencies(ros_main
+ament_target_dependencies(pflidar_node
   rclcpp
   pf_interfaces
   laser_geometry
@@ -113,7 +113,7 @@ if (BUILD_TESTING)
   )
 endif()
 
-install(TARGETS ros_main
+install(TARGETS pflidar_node
         DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch config dumps
