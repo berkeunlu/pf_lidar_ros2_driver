@@ -73,7 +73,8 @@ void PFDataPublisher::to_msg_queue(T& packet, uint16_t layer_idx, int layer_incl
     // msg->header.seq = packet.header.header.scan_number;
     msg->scan_time = static_cast<float>(scan_time.seconds());
     msg->header.stamp = packet.last_acquired_point_stamp - scan_time;
-    msg->angle_increment = packet.header.angular_increment / 10000.0 * (M_PI / 180.0);
+    // msg->angle_increment = 0.00074800000; //For 2048 resolution
+    msg->angle_increment = (M_PI * 2.0) / packet.header.num_points_scan
 
     {
       msg->time_increment = (params_->angular_fov * msg->scan_time) / (M_PI * 2.0) / packet.header.num_points_scan;
@@ -95,8 +96,8 @@ void PFDataPublisher::to_msg_queue(T& packet, uint16_t layer_idx, int layer_incl
           }
         }
       }
-
-      msg->range_min = params_->radial_range_min;
+      msg->range_min = 0.25; //Hardcoded min range
+      // msg->range_max = params_->radial_range_min;
       msg->range_max = params_->radial_range_max;
     }
 
@@ -120,7 +121,12 @@ void PFDataPublisher::to_msg_queue(T& packet, uint16_t layer_idx, int layer_incl
     if (packet.distance[i] == 0xFFFFFFFF)
       data = std::numeric_limits<std::uint32_t>::quiet_NaN();
     else
-      data = packet.distance[i] / 1000.0;
+    {
+      if (packet.distance[i] < 250)                               //Hardcoded min range
+        data = std::numeric_limits<std::uint32_t>::quiet_NaN();   //Hardcoded min range
+      else
+        data = packet.distance[i] / 1000.0;
+    }
     msg->ranges[idx + i] = std::move(data);
     if (!packet.amplitude.empty() && packet.amplitude[i] >= 32)
       msg->intensities[idx + i] = packet.amplitude[i];
