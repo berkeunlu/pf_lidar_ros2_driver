@@ -74,7 +74,7 @@ void PFDataPublisher::to_msg_queue(T& packet, uint16_t layer_idx, int layer_incl
     msg->scan_time = static_cast<float>(scan_time.seconds());
     msg->header.stamp = packet.last_acquired_point_stamp - scan_time;
     // msg->angle_increment = 0.00074800000; //For 2048 resolution
-    msg->angle_increment = (M_PI * 2.0) / packet.header.num_points_scan
+    msg->angle_increment = (M_PI * 2.0) / float(packet.header.num_points_scan);
 
     {
       msg->time_increment = (params_->angular_fov * msg->scan_time) / (M_PI * 2.0) / packet.header.num_points_scan;
